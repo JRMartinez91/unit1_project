@@ -1,0 +1,85 @@
+*{
+    border: 1px solid hotpink;
+}
+
+.container-all{
+    display:flex;
+    flex-direction:row;
+    justify-content: center;
+   
+}
+
+.container-scorecard{
+    width:20%;
+    height: 900px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.scorecard{
+    width: 250px;
+    height: 250px;
+}
+
+.scorecard img{
+    width: 125px;
+    height: 125px;
+    margin: 20px auto;
+    display: block;
+}
+
+.score{
+    text-align:center;
+    font-size: 30px;
+}
+
+.container-center{
+    width:60%;
+    height:900px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+#options-bar{
+    display:flex;
+    justify-content: center;
+    align-items:center;
+}
+
+#options-bar button{
+    font-size: 20px;
+    padding: 5px;
+    margin: 5px;
+    width: 200px;
+}
+
+.container-gameboard{
+    flex-grow: 3;
+    background-color: grey;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+/* the point at which the board and scorecards can no longer fit on the screen
+is 1140 px wide. that will be the breakpoint.
+
+on "mobile", the containter-all should become a column flexbox,
+and the white player's scorecard must justify-self to the bottom.
+
+then, the two scorecards must align-self to either side, so that the are side by side.
+*/
+
+#gameboard{
+    height: 650px;
+    width: 650px;
+    background-color:white;
+}
+
+h1{
+    text-align:center;
+}
