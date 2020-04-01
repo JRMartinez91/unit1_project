@@ -4,6 +4,10 @@ console.log("Hello World")
 const spaceGrid = [ [],[],[],[],[],[],[],[]]
 const tileGrid = [ [],[],[],[],[],[],[],[]]
 
+//keep track of each player's score
+let whiteScore = 0;
+let blackScore = 0;
+
 //the eight directions for the ping function
 const eightDirections =[
     {deltax:1,deltay:0},    //Left
@@ -20,8 +24,8 @@ $(()=>{
 
     //crucial jquery variables
     $gameboard=$('#gameboard')
-    $whiteScore = $('#white-score')
-    $blackScore = $('#black-score')
+    $whiteScoreDisplay = $('#white-score')
+    $blackScoreDisplay = $('#black-score')
 
     //other global variables
     turnSwitch = true;
@@ -69,16 +73,18 @@ $(()=>{
            
             captureCheck($(event.currentTarget));
     
-             //change turns
-             turnSwitch = !turnSwitch;
+            //change turns
+            turnSwitch = !turnSwitch;
+
+            //update score
+            keepScore();
+
         }
 
 
     })
 
-    const findGridLocation=($space)=>{
-        
-    }
+    //const findGridLocation=($space)=>{}
 
     const validMove=($space)=>{
         let result = true;
@@ -119,8 +125,8 @@ $(()=>{
             }
         }
         
-
-        console.log("row",row,"column",column)
+        console.log(">>>>>>>>A NEW CAPTURE CHECK IS STARTING<<<<<<<")
+        console.log("starting from row",row,"column",column)
 
         //send a ping out in every direction to see if there's an opportunity
         //to capture
@@ -153,13 +159,19 @@ $(()=>{
         //define friend and enemy
         let friend
         let enemy
+        //because addClass takes a class name WITHOUT the initial ".",
+        //the variable used to assign a class to the newly created tiles
+        //is different
+        let newFriends
 
         if(turnSwitch){
             friend = '.white-tile'
             enemy = '.black-tile'
+            newFriends = 'white-tile'
         } else {
             friend = '.black-tile'
             enemy = '.white-tile'
+            newFriends = 'black-tile'
         }
         //console.log("friend",friend)
 
@@ -169,7 +181,7 @@ $(()=>{
         //enemy pieces encountered along the ping's path
         let targets = []
 
-        console.log("pinging at", deltaX, deltaY)
+        console.log("pinging at direction", deltaX, deltaY)
 
         while(continuePing){
 
@@ -184,19 +196,19 @@ $(()=>{
             }
             else {
                 //otherwise, continue as normal
-                console.log(`checking locaton ${X},${Y}`)
+                //console.log(`checking locaton ${X},${Y}`)
                 $currentSpace = spaceGrid[Y][X];
                 
                 //if it's an enemy space, record that space and continue
-                if( $currentSpace.children($(enemy)).length > 0){
+                if( $currentSpace.children(enemy).length > 0){
                     targets.push({x: X, y: Y})
-                    console.log("ENEMY STAND!")
+                    console.log("ENEMY STAND!", enemy)
                 }
                 //if it's a frindly space, end the process and capture
-                else if ( $currentSpace.children($(friend)).length > 0){
+                else if ( $currentSpace.children(friend).length > 0){
                     continuePing = false;
                     capture = true;
-                    console.log("friendly tile")
+                    console.log("friendly tile", friend)
                 }
                 //if it's an empty space, end the process and DO NOT capture
                 else if ( $currentSpace.children().length == 0){
@@ -206,7 +218,9 @@ $(()=>{
             }
         } // end while
 
-        console.log("targets",targets)
+        if(targets.length>0){
+            console.log("targets",targets)
+        }
 
         //if the conditions for a capture have been met...
         if(capture){
@@ -216,9 +230,36 @@ $(()=>{
                 //get rid of the (presumably enemy) tile currently on it
                 $victimSpace.children().remove();
                 //add a tile of friendly color
-                $victimSpace.append($('<div>').addClass(friend))
+                $newTile = $('<div>').addClass(newFriends)
+                $victimSpace.append($newTile);
             }
         } // end capture
+
+    }
+
+    const keepScore=()=>{
+        console.log("updating score")
+
+        let whiteCounter= 0;
+        let blackCounter= 0;
+        
+        // search through the space grid for every tile
+        // that has children of the specified class
+        for(let i = 0; i < 8; i++){
+            for(let j = 0; j < 8; j++){
+                if(spaceGrid[i][j].children('.white-tile').length>0){
+                    whiteCounter++;
+                } else if(spaceGrid[i][j].children('.black-tile').length>0){
+                    blackCounter++;
+                }
+            }
+        }
+
+        console.log("white score:", whiteCounter, "| black score:", blackCounter)
+        whiteScore = whiteCounter;
+        blackScore = blackCounter;
+        $whiteScoreDisplay.text(whiteScore);
+        $blackScoreDisplay.text(blackScore);
 
     }
 
