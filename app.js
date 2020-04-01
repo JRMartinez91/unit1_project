@@ -1,5 +1,21 @@
 console.log("Hello World")
 
+//setup the 8x8 data structure
+const spaceGrid = [ [],[],[],[],[],[],[],[]]
+const tileGrid = [ [],[],[],[],[],[],[],[]]
+
+//the eight directions for the ping function
+const eightDirections =[
+    {deltax:1,deltay:0},    //Left
+    {deltax:1,deltay:1},    //Lower Left
+    {deltax:0,deltay:1},    //Down
+    {deltax:-1,deltay:1},   //Lower Right
+    {deltax:-1,deltay:0},   //Right
+    {deltax:-1,deltay:-1},  //Upper Right
+    {deltax:0,deltay:-1},   //Up
+    {deltax:1,deltay: -1},  //Upper Left
+]
+
 $(()=>{
 
     //crucial jquery variables
@@ -14,21 +30,6 @@ $(()=>{
 
     //and heeeere weeee.......    go
 
-    //setup the 8x8 data structure
-    const spaceGrid = [ [],[],[],[],[],[],[],[]]
-    const tileGrid = [ [],[],[],[],[],[],[],[]]
-
-    //the eight directions for the ping function
-    const eightDirections =[
-        {deltax:1,deltay:0},    //Left
-        {deltax:1,deltay:1},    //Lower Left
-        {deltax:0,deltay:1},    //Down
-        {deltax:-1,deltay:1},   //Lower Right
-        {deltax:-1,deltay:0},   //Right
-        {deltax:-1,deltay:-1},  //Upper Right
-        {deltax:0,deltay:-1},   //Up
-        {deltax:1,deltay: -1},  //Upper Left
-    ]
 
 
     //on page load, spawn 8x8 grid in game board
@@ -57,20 +58,21 @@ $(()=>{
                 //place white tile
                 $(event.currentTarget).append($('<div>').addClass('white-tile'))
 
-                //change turns
-                turnSwitch = !turnSwitch;
+               
             } else{
                 //place black tile
                 $(event.currentTarget).append($('<div>').addClass('black-tile'))
 
-                //change turns
-                turnSwitch = !turnSwitch
             }
             //mark this space as already clicked
             $(event.currentTarget).addClass('clicked')
+           
+            captureCheck($(event.currentTarget));
+    
+             //change turns
+             turnSwitch = !turnSwitch;
         }
 
-        captureCheck();
 
     })
 
@@ -93,10 +95,38 @@ $(()=>{
         let row
         let column
 
-        const myRow = spaceGrid.filter((e)=>{e.includes($space)})
+        //determine the space on the spaceGrid that the clicked tile occupies
+        console.log($space);
+        const myRow = spaceGrid.filter(function(e){
+            //console.log("e",e)
+            for(thing of e){
+               // console.log("thing",thing)
+               // console.log("thing[0]",thing[0])
+                if(thing[0]==$space[0]){
+                    return true;
+                }
+            }
+        })
+        //console.log("myRow",myRow)
+        console.log(myRow[0])
 
-        row = spaceGrid.indexOf(myRow)
-        column = spaceGrid[row].indexOf($space)
+        row = spaceGrid.indexOf(myRow[0])
+        //column = spaceGrid[row].indexOf($space)
+        for(let i = 0; i<8; i++){
+            if(spaceGrid[row][i][0] == $space[0]){
+                column = i;
+                break;
+            }
+        }
+        
+
+        console.log("row",row,"column",column)
+
+        //send a ping out in every direction to see if there's an opportunity
+        //to capture
+        for(dir of eightDirections){
+            ping(row,column,dir.deltax,dir.deltay);
+        }
 
     }
 
@@ -121,8 +151,8 @@ $(()=>{
         X = column
 
         //define friend and enemy
-        const friend
-        const enemy
+        let friend
+        let enemy
 
         if(turnSwitch){
             friend = '.white-tile'
@@ -131,6 +161,7 @@ $(()=>{
             friend = '.black-tile'
             enemy = '.white-tile'
         }
+        //console.log("friend",friend)
 
         //will we capture?
         let capture = false;
@@ -138,42 +169,56 @@ $(()=>{
         //enemy pieces encountered along the ping's path
         let targets = []
 
+        console.log("pinging at", deltaX, deltaY)
+
         while(continuePing){
 
             //define the next space in the path of the ping
             Y += deltaY
             X += deltaX
 
-            $currentSpace = spaceGrid[Y][X];
+            
             //if we've reached the edge of the board, end the process and DO NOT capture
             if( X > 7 || Y > 7 || X < 0 || Y < 0){
                 continuePing = false;
             }
-            //if it's an enemy space, record that space and continue
-            else if( $currentSpace.children($(enemy)).length > 0){
-                targets.push({x: X, y: Y})
+            else {
+                //otherwise, continue as normal
+                console.log(`checking locaton ${Y},${X}`)
+                $currentSpace = spaceGrid[Y][X];
+                
+                //if it's an enemy space, record that space and continue
+                if( $currentSpace.children($(enemy)).length > 0){
+                    targets.push({x: X, y: Y})
+                    console.log("ENEMY STAND!")
+                }
+                //if it's a frindly space, end the process and capture
+                else if ( $currentSpace.children($(friend)).length > 0){
+                    continuePing = false;
+                    capture = true;
+                    console.log("friendly tile")
+                }
+                //if it's an empty space, end the process and DO NOT capture
+                else if ( $currentSpace.children().length == 0){
+                    continuePing = false;
+                    console.log("empty")
+                }
             }
-            //if it's a frindly space, end the process and capture
-            else if ( $currentSpace.children($(friend)).length > 0){
-                continuePing = false;
-                capture = true;
-            }
-            //if it's an empty space, end the process and DO NOT capture
-            else if ( $currentSpace.children().length == 0){
-                continuePing = false;
-            }
-        }
+        } // end while
 
         console.log("targets",targets)
 
         //if the conditions for a capture have been met...
         if(capture){
             for(victim of targets){
+                //find the jquery ID of the space in question
                 $victimSpace = spaceGrid[victim.y][victim.x];
+                //get rid of the (presumably enemy) tile currently on it
                 $victimSpace.children().remove();
+                //add a tile of friendly color
                 $victimSpace.append($('<div>').addClass(friend))
             }
-        }
+        } // end capture
 
     }
 
