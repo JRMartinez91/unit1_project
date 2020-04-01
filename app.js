@@ -184,7 +184,7 @@ $(()=>{
             }
             else {
                 //otherwise, continue as normal
-                console.log(`checking locaton ${Y},${X}`)
+                console.log(`checking locaton ${X},${Y}`)
                 $currentSpace = spaceGrid[Y][X];
                 
                 //if it's an enemy space, record that space and continue
