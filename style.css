@@ -78,8 +78,20 @@ then, the two scorecards must align-self to either side, so that the are side by
     height: 650px;
     width: 650px;
     background-color:white;
+    display:flex;
+    flex-direction: column;
 }
 
 h1{
     text-align:center;
+}
+
+.row{
+    display:flex;
+    height: 12.5%;
+}
+
+.space{
+    width: 12.5%;
+    height: 100%;
 }
