@@ -95,3 +95,19 @@ h1{
     width: 12.5%;
     height: 100%;
 }
+
+.white-tile{
+    background-color:white;
+    border-radius: 50%;
+    border: 2px solid gray;
+    width: 80%;
+    height: 80%;
+}
+
+.black-tile{
+    background-color: rgb(41, 41, 41);
+    border: 2px solid black;
+    border-radius: 50%;
+    width: 80%;
+    height: 80%;
+}
