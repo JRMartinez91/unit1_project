@@ -77,6 +77,8 @@ $(()=>{
         $('.black-tile').remove();
         //remove 'clicked' class from all spaces
         $('.space').removeClass('clicked');
+        //remove 'possible capture' highlight color from all spaces
+        $('.space').removeClass('juicyTarget');
         //set scores to zero
         whiteScore = 0;
         blackScore = 0;
@@ -87,10 +89,10 @@ $(()=>{
         //reset glow on scorecards
         $('.scorecard').removeClass('glowing')
     })
+
+
     //placing a tile
     $('.space').on('click',(event)=>{
-
-        
 
         //check various condtions for this being a valid move
         if(validMove($(event.currentTarget))){
