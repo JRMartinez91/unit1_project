@@ -70,7 +70,8 @@ $(()=>{
             }
             //mark this space as already clicked
             $(event.currentTarget).addClass('clicked')
-           
+
+            //capture any enemy pieces that can be captured
             captureCheck($(event.currentTarget));
     
             //change turns
@@ -114,7 +115,7 @@ $(()=>{
             }
         })
         //console.log("myRow",myRow)
-        console.log(myRow[0])
+        //console.log(myRow[0])
 
         row = spaceGrid.indexOf(myRow[0])
         //column = spaceGrid[row].indexOf($space)
@@ -147,6 +148,11 @@ $(()=>{
     // (-1,-1) Upper Right
     // (0,-1) Up
     // (1,-1) Upper Left
+
+    //ping() has TWO MODES: capture and detect
+    //in CAPTURED mode, it changes the tiles on the board that have
+    //been captured.
+    //in DETECT mode, it returns a list of tiles that COULD be captured.
     const ping=(row,column,deltaX,deltaY)=>{
 
         //this variable will turn false when the ping hits a dead end
@@ -260,6 +266,72 @@ $(()=>{
         blackScore = blackCounter;
         $whiteScoreDisplay.text(whiteScore);
         $blackScoreDisplay.text(blackScore);
+
+    }
+
+    const inversePing=(listOfTiles,deltaX,deltaY)=>{
+        //this variable will turn false when the ping hits a dead end
+        continuePing = true;
+
+        //define the space we're starting from
+        Y = row
+        X = column
+
+        //define friend and enemy
+        let friend
+        let enemy
+        //because addClass takes a class name WITHOUT the initial ".",
+        //the variable used to assign a class to the newly created tiles
+        //is different
+        let newFriends
+
+        if(turnSwitch){
+            friend = '.white-tile'
+            enemy = '.black-tile'
+            newFriends = 'white-tile'
+        } else {
+            friend = '.black-tile'
+            enemy = '.white-tile'
+            newFriends = 'black-tile'
+        }
+        //console.log("friend",friend)
+
+        //will we capture?
+        let capture = false;
+
+        //enemy pieces encountered along the ping's path
+        let targets = []
+
+        console.log("pinging at direction", deltaX, deltaY)
+
+    }
+
+    capturePossible=(tileClass)=>{
+
+        //basically what this has to do is find every tile of the argument's
+        //specified color, and send out a ping from them but NOT to capture, only to
+        //DETECT if capture is POSSIBLE
+
+        //intialize a list of all spaces containing friendly tiles
+        myTiles = []
+
+        // search through the space grid for every tile
+        // that has children of the specified class
+        for(let i = 0; i < 8; i++){
+            for(let j = 0; j < 8; j++){
+                if(spaceGrid[i][j].children(titleClass).length>0){
+                    myTiles.push({x:j,y:i})
+                }
+            }
+        }
+
+        //from each of these space we send out an INVERSE PING:
+        //  rather than detecting a row of enemy tiles that ends in a friendly tile,
+        //  we're looking for rows of enemy tiles that end in BLANK SPACES
+
+        //as an added bonus, we may highlight the spaces where a valid move can be played.
+
+
 
     }
 
