@@ -14,7 +14,7 @@
 <body>
     <div class="container-all">
         <div class="container-scorecard">
-            <div class="scorecard">
+            <div class="scorecard" id="white-scorecard">
                 <img href="#" alt="white tile icon"> <!--tile icon-->
                 <div class="score" id="white-score">0</div>
             </div>
@@ -29,14 +29,32 @@
             <div id="options-bar">
                 <button id="new-game-btn">New Game</button>
                 <button id="rules-btn">Rules</button>
-                <button id="options-btr">Options</button>
+                <button id="options-btn">Options</button>
             </div>
         </div>
         <div class="container-scorecard">
-            <div class="scorecard">
+            <div class="scorecard" id="black-scorecard">
                 <img href="#" alt="black tile icon"> <!--tile icon-->
                 <div class="score" id="black-score">0</div>
             </div>
+        </div>
+    </div>
+    <!--Rules Modal-->
+    <div class="modal" id="rules-modal">
+        <div class="modal-content" id="rules-modal-content">
+            <h2>Rules of Reversi</h2>
+            <div class="divider-bar"></div>
+            <p>the rules go here</p>
+            <p>click anywhere to close</p>
+        </div>
+    </div>
+    <!--Options Modal-->
+    <div class="modal" id="options-modal">
+        <div class="modal-content" id="options-modal-content">
+            <h2>Options</h2>
+            <div class="divider-bar"></div>
+            <p>the options go here</p>
+            <p>click anywhere to close</p>
         </div>
     </div>
 </body>

@@ -52,6 +52,41 @@ $(()=>{
     console.log(spaceGrid);
     //store the 8x8 grid in an array.
 
+    //menu buttons
+    
+    //show rules
+    $('#rules-btn').on('click',()=>{
+        $('#rules-modal').css('display','block');
+    })
+    //hide rules
+    $('#rules-modal').on('click',()=>{
+        $('#rules-modal').css('display','none');
+    })
+    //show options
+    $('#options-btn').on('click',()=>{
+        $('#options-modal').css('display','block');
+    })
+    //hide options
+    $('#options-modal').on('click',()=>{
+        $('#options-modal').css('display','none');
+    })
+    //new game
+    $('#new-game-btn').on('click',()=>{
+        //erase all tiles from the board
+        $('.white-tile').remove();
+        $('.black-tile').remove();
+        //remove 'clicked' class from all spaces
+        $('.space').removeClass('clicked');
+        //set scores to zero
+        whiteScore = 0;
+        blackScore = 0;
+        $whiteScoreDisplay.text(whiteScore);
+        $blackScoreDisplay.text(blackScore);
+        //it's White's turn
+        tunSwitch = true;
+        //reset glow on scorecards
+        $('.scorecard').removeClass('glowing')
+    })
     //placing a tile
     $('.space').on('click',(event)=>{
 
@@ -83,11 +118,16 @@ $(()=>{
             keepScore();
 
 
-            //highlight the the other player's valid moves for the next turn
+            //highlight the the OTHER player's valid moves for the next turn
+            //and highlight their icon on the GUI
             if(turnSwitch){
                 capturePossible('.white-tile');
+                $('#white-scorecard').addClass('glowing')
+                $('#black-scorecard').removeClass('glowing')
             } else {
                 capturePossible('.black-tile');
+                $('#black-scorecard').addClass('glowing')
+                $('#white-scorecard').removeClass('glowing')
             }
 
         }
