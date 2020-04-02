@@ -55,11 +55,7 @@ $(()=>{
     //placing a tile
     $('.space').on('click',(event)=>{
 
-        if(turnSwitch){
-            capturePossible('.white-tile');
-        } else {
-            capturePossible('.black-tile');
-        }
+        
 
         //check various condtions for this being a valid move
         if(validMove($(event.currentTarget))){
@@ -85,6 +81,14 @@ $(()=>{
 
             //update score
             keepScore();
+
+
+            //highlight the the other player's valid moves for the next turn
+            if(turnSwitch){
+                capturePossible('.white-tile');
+            } else {
+                capturePossible('.black-tile');
+            }
 
         }
 
@@ -217,24 +221,24 @@ $(()=>{
                 //if it's an enemy space, record that space and continue
                 if( $currentSpace.children(enemy).length > 0){
                     targets.push({x: X, y: Y})
-                    console.log("ENEMY STAND!", enemy)
+                   // console.log("ENEMY STAND!", enemy)
                 }
                 //if it's a frindly space, end the process and capture
                 else if ( $currentSpace.children(friend).length > 0){
                     continuePing = false;
                     capture = true;
-                    console.log("friendly tile", friend)
+                   // console.log("friendly tile", friend)
                 }
                 //if it's an empty space, end the process and DO NOT capture
                 else if ( $currentSpace.children().length == 0){
                     continuePing = false;
-                    console.log("empty")
+                  //  console.log("empty")
                 }
             }
         } // end while
 
         if(targets.length>0){
-            console.log("targets",targets)
+           // console.log("targets",targets)
         }
 
         //if the conditions for a capture have been met...
@@ -367,6 +371,8 @@ $(()=>{
 
     capturePossible=(tileClass)=>{
 
+        console.log("XXXXXXX A NEW 'CAPTURE POSSIBLE' CHECK IS STARTING XXXXXXX")
+
         //CLEAR all of the PREVIOUS TURN'S highlighted spaces
         $('.space').removeClass('juicyTarget');
 
@@ -390,6 +396,7 @@ $(()=>{
                 }
             }
         }
+        console.log(myTiles)
 
         //from each of these space we send out an INVERSE PING:
         //  rather than detecting a row of enemy tiles that ends in a friendly tile,
