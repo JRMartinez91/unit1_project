@@ -55,6 +55,12 @@ $(()=>{
     //placing a tile
     $('.space').on('click',(event)=>{
 
+        if(turnSwitch){
+            capturePossible('.white-tile');
+        } else {
+            capturePossible('.black-tile');
+        }
+
         //check various condtions for this being a valid move
         if(validMove($(event.currentTarget))){
 
@@ -94,6 +100,9 @@ $(()=>{
         if($space.hasClass('clicked')){
             result = false;
         }
+
+        //in must-flip mode, check if the player has any valid moves--
+        
         return result;
     }
 
@@ -269,13 +278,14 @@ $(()=>{
 
     }
 
-    const inversePing=(listOfTiles,deltaX,deltaY)=>{
+    const inversePing=(x,y,deltaX,deltaY)=>{
+
         //this variable will turn false when the ping hits a dead end
         continuePing = true;
 
         //define the space we're starting from
-        Y = row
-        X = column
+        let Y = y
+        let X = x
 
         //define friend and enemy
         let friend
@@ -283,30 +293,82 @@ $(()=>{
         //because addClass takes a class name WITHOUT the initial ".",
         //the variable used to assign a class to the newly created tiles
         //is different
-        let newFriends
+        //let newFriends
 
         if(turnSwitch){
             friend = '.white-tile'
             enemy = '.black-tile'
-            newFriends = 'white-tile'
+           //newFriends = 'white-tile'
         } else {
             friend = '.black-tile'
             enemy = '.white-tile'
-            newFriends = 'black-tile'
+           // newFriends = 'black-tile'
         }
         //console.log("friend",friend)
 
-        //will we capture?
-        let capture = false;
+        //has a space where capture is possible been detected?
+        let canCapture = false;
 
         //enemy pieces encountered along the ping's path
         let targets = []
 
+        //the space where a capture is possible, if any
+        let validSpace
+
         console.log("pinging at direction", deltaX, deltaY)
+
+        while(continuePing){
+
+            //define the next space in the path of the ping
+            Y += deltaY
+            X += deltaX
+
+            
+            //if we've reached the edge of the board, end the process and DO NOT capture
+            if( X > 7 || Y > 7 || X < 0 || Y < 0){
+                continuePing = false;
+            }
+            else {
+                //otherwise, continue as normal
+                //console.log(`checking locaton ${X},${Y}`)
+                $currentSpace = spaceGrid[Y][X];
+                
+                //if it's an enemy space, record that space and continue
+                if( $currentSpace.children(enemy).length > 0){
+                    targets.push({x: X, y: Y})
+                    console.log("ENEMY STAND!", enemy)
+                }
+                //if it's a frindly space, end the process and declare capture IMpossible
+                else if ( $currentSpace.children(friend).length > 0){
+                    continuePing = false;
+                    console.log("friendly tile", friend)
+                }
+                //if it's an empty space, end the process and declare capture possible
+                else if ( $currentSpace.children().length == 0){
+                    continuePing = false;
+                    //BUT we can only capture if there was at least one enemy tile
+                    //between the starting point and the empty space!!!
+                    if(targets.length>=1){
+                        canCapture = true;
+                        validSpace = {x:X,y:Y};
+                    }
+                    console.log("empty")
+                }
+            }
+        } // end while
+
+        if(canCapture){
+            return validSpace;
+        } else {
+            return "NONE";
+        }
 
     }
 
     capturePossible=(tileClass)=>{
+
+        //CLEAR all of the PREVIOUS TURN'S highlighted spaces
+        $('.space').removeClass('juicyTarget');
 
         //basically what this has to do is find every tile of the argument's
         //specified color, and send out a ping from them but NOT to capture, only to
@@ -315,11 +377,15 @@ $(()=>{
         //intialize a list of all spaces containing friendly tiles
         myTiles = []
 
+        //initalize a list of all spaces where capture moves are possible
+        juicyTargets = []
+
+
         // search through the space grid for every tile
         // that has children of the specified class
         for(let i = 0; i < 8; i++){
             for(let j = 0; j < 8; j++){
-                if(spaceGrid[i][j].children(titleClass).length>0){
+                if(spaceGrid[i][j].children(tileClass).length>0){
                     myTiles.push({x:j,y:i})
                 }
             }
@@ -329,10 +395,36 @@ $(()=>{
         //  rather than detecting a row of enemy tiles that ends in a friendly tile,
         //  we're looking for rows of enemy tiles that end in BLANK SPACES
 
-        //as an added bonus, we may highlight the spaces where a valid move can be played.
+        //for every friendly tile...
+        for(space of myTiles){
+            //send an inverse ping out in every cardinal direction
+            for(dir of eightDirections){
+                //and add any spaces it finds to our list
+                juicyTargets.push(inversePing(space.x,space.y,dir.deltax,dir.deltay));
+            }
+        }
 
+        //remove all those "NONE" strings.
+        //(gotta be a better way to do this!)
+        juicyTargets = juicyTargets.filter((e)=>{
+            return (typeof(e) != "string")
+        })
+        console.log("juicy Targets:",juicyTargets)
 
-
+        //in must-flip mode, no results returned means the player in question
+        //must skip his turn!
+        if(juicyTargets.length==0){
+            if(turnSwitch){
+                alert("Player White has no valid moves!")
+            } else{
+                alert("Player Black has no valid moves!")
+            }
+        } else {
+            //as an added bonus, we may highlight the spaces where a valid move can be played.
+            for(space of juicyTargets){
+                spaceGrid[space.y][space.x].addClass('juicyTarget');
+            }
+        }
     }
 
 
