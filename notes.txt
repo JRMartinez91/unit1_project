@@ -1,0 +1,28 @@
+> User stories thing-- step by step of what the user should experience
+> what new things did you learn?
+> design process
+> what was the biggest challenge
+> summarize the big mechanic
+> photo of the wireframe skethces????
+
+>probably, go to office hours for guidance on readme
+
+>read the assignment itself over and over for all those little specifics they want
+
+>script your presentation!!!!!
+
+>assessment will inlcude getting input from a from
+
+
+------
+
+Things to put in options:
+    - turn "highlight possible captures" on and office
+
+-during "must flip", needs some kind of "cannot play piece here" alert
+
+-in "capturePossbile" : need to fix the point where alert fires off
+    > tiny delay, like 1 millisecond, will be enough to make sure the alert appears
+       AFTER the previous turn's move appears on the gameboard
+
+- insert the if statements for 'classic' and 'gameOn' booleans

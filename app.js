@@ -1,5 +1,19 @@
 console.log("Hello World")
 
+//wait to choose a game mode
+// classic -> true
+// freeform -> false
+let classic = false;
+
+//no moves can be made while this is false
+let gameOn = false;
+
+//options
+////will moves that allow capture be highlighted?
+highlightCapture = false;
+////is player 1 competing against another human?
+multiplayer = false;
+
 //setup the 8x8 data structure
 const spaceGrid = [ [],[],[],[],[],[],[],[]]
 const tileGrid = [ [],[],[],[],[],[],[],[]]
@@ -53,25 +67,66 @@ $(()=>{
     //store the 8x8 grid in an array.
 
     //menu buttons
+
+    //hide modals
+    $('.modal').on('click',()=>{
+        $clicked = $(event.target);
+        //dont hide the modal if what's being clicked is a button...
+        if(!$clicked.is('button')){
+            $('.modal').css('display','none')
+        }
+        //...unless it's one of the 'start a new game' buttons
+        if($clicked.hasClass('start-button')){
+            $('.modal').css('display','none')
+        }
+    })
     
     //show rules
     $('#rules-btn').on('click',()=>{
         $('#rules-modal').css('display','block');
     })
-    //hide rules
-    $('#rules-modal').on('click',()=>{
-        $('#rules-modal').css('display','none');
-    })
+
     //show options
     $('#options-btn').on('click',()=>{
         $('#options-modal').css('display','block');
     })
-    //hide options
-    $('#options-modal').on('click',()=>{
-        $('#options-modal').css('display','none');
+    //options
+    $('#highlight-capture-btn').on('click',()=>{
+        //if highlightCapture is currently ON, turn it OFF
+        if(highlightCapture){
+            highlightCapture = false;
+            $(event.currentTarget).text("Show Possible Captures: OFF")
+            $('.juicyTarget').css('background-color','none')
+        }else{
+            highlightCapture = true;
+            $(event.currentTarget).text("Show Possible Captures: ON")
+            $('.juicyTarget').css('background-color','rgb(241, 210, 210)')
+
+        }
     })
-    //new game
+
+    //show new game menu
     $('#new-game-btn').on('click',()=>{
+        $('#select-modal').css('display','block');
+    })
+
+    //game modes
+    $('#start-new-classic-btn').on('click',()=>{
+        classic = true;
+        resetBoard();
+        //in classic mode, the board starts with a specific configuration--
+        spaceGrid[3][3].append($('<div>').addClass('white-tile'))
+        spaceGrid[4][4].append($('<div>').addClass('white-tile'))
+        spaceGrid[3][4].append($('<div>').addClass('black-tile'))
+        spaceGrid[4][3].append($('<div>').addClass('black-tile'))
+    })
+
+    $('#start-new-freeform-btn').on('click',()=>{
+        classic = false;
+        resetBoard();
+    })
+
+    const resetBoard=()=>{
         //erase all tiles from the board
         $('.white-tile').remove();
         $('.black-tile').remove();
@@ -88,7 +143,10 @@ $(()=>{
         tunSwitch = true;
         //reset glow on scorecards
         $('.scorecard').removeClass('glowing')
-    })
+        $('#white-scorecard').addClass('glowing')
+        //enable gameplay
+        gameOn = true;
+    }
 
 
     //placing a tile
@@ -101,7 +159,6 @@ $(()=>{
                 //place white tile
                 $(event.currentTarget).append($('<div>').addClass('white-tile'))
 
-               
             } else{
                 //place black tile
                 $(event.currentTarget).append($('<div>').addClass('black-tile'))
@@ -132,8 +189,7 @@ $(()=>{
                 $('#white-scorecard').removeClass('glowing')
             }
 
-        }
-
+        }//if it's not a valid move, nothing happens
 
     })
 
@@ -147,7 +203,13 @@ $(()=>{
             result = false;
         }
 
-        //in must-flip mode, check if the player has any valid moves--
+        //in must-flip mode, check if the player has clicked on a space
+        //that allows a capture--
+        if(classic){
+            if(!$space.hasClass('juicyTarget')){
+                result = false;
+            }
+        }
         
         return result;
     }
@@ -460,19 +522,25 @@ $(()=>{
         })
         console.log("juicy Targets:",juicyTargets)
 
-        //in must-flip mode, no results returned means the player in question
-        //must skip his turn!
         if(juicyTargets.length==0){
-            if(turnSwitch){
-                alert("Player White has no valid moves!")
-            } else{
-                alert("Player Black has no valid moves!")
+            //in must-flip mode, no results returned means the player in question
+            //must skip his turn!
+            if(classic){
+                if(turnSwitch){
+                    setTimeout(function(){alert("Player White has no valid moves! Turn passes to Black")},10)
+                } else{
+                    setTimeout(function(){alert("Player Black has no valid moves! Turn passes to White")},10)
+                }
+                turnSwitch = !turnSwitch;
             }
         } else {
-            //as an added bonus, we may highlight the spaces where a valid move can be played.
+            //compile a list of possible targets
             for(space of juicyTargets){
                 spaceGrid[space.y][space.x].addClass('juicyTarget');
             }
+            //in classic mode, this will be used by the validMove function to disallow
+            //moves that do not result in captures
+            //if 'show possible captures' is ON, these spaces will be highlighted.
         }
     }
 

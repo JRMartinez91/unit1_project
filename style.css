@@ -117,7 +117,8 @@ h1{
 }
 
 .juicyTarget{
-    background-color: rgb(241, 210, 210)
+    background-color: rgb(241, 210, 210);
+    background-color: none;
 }
 
 /*NB: it's possible to maintain aspect ratio by setting
@@ -147,4 +148,9 @@ also possible for font size*/
     padding: 20px;
     border: 1px solid #888;
     width: 40%; /* Could be more or less, depending on screen size */
-  }
+}
+
+.divider-bar{
+    border-top: 3px solid gray;
+}
+
