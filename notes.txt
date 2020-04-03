@@ -17,12 +17,30 @@
 ------
 
 Things to put in options:
-    - turn "highlight possible captures" on and office
-
+    - turn "highlight possible captures" on and off
+    RESOLVED
+    
 -during "must flip", needs some kind of "cannot play piece here" alert
+RESOLVED.
 
 -in "capturePossbile" : need to fix the point where alert fires off
     > tiny delay, like 1 millisecond, will be enough to make sure the alert appears
-       AFTER the previous turn's move appears on the gameboard
+       AFTER the previous turn's move appears on the gameboard  
+RESOLVED.
 
-- insert the if statements for 'classic' and 'gameOn' booleans
+- insert the if statements for 'classic' and 'gameOn' booleansc
+RESOLVED;
+
+{
+- something the "show possible captures" button does is interfering
+    with the ability to start a new game in Classic mode. but it only happens sometimes.
+    the error seems to be that capturePossbile is sending out pings
+    that assume white tiles are enemies, despite it being White's turn
+    turn switch is forced to true when a new classic game starts,
+    so is it even possible that turnswitch is the problem?
+
+    inversePing uses turn switch to determine which tiles are friends or enemies.
+    is this the source of the error?
+}
+RESOLVED: it was a typo in the resetBoard() function-- 'turnswitch' was misspelled,
+and thus never actually reset. Haaaaa.

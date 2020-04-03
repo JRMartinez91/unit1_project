@@ -8,6 +8,10 @@ let classic = false;
 //no moves can be made while this is false
 let gameOn = false;
 
+//this variable turns to TRUE the first time a gamemode is selected,
+//and stays TRUE until the page is refreshed
+let firstGameBegun = false;
+
 //options
 ////will moves that allow capture be highlighted?
 highlightCapture = false;
@@ -113,22 +117,35 @@ $(()=>{
         resetBoard();
         //in classic mode, the board starts with a specific configuration--
         spaceGrid[3][3].append($('<div>').addClass('white-tile'))
+        spaceGrid[3][3].addClass('clicked')
+
         spaceGrid[4][4].append($('<div>').addClass('white-tile'))
+        spaceGrid[4][4].addClass('clicked')
+
         spaceGrid[3][4].append($('<div>').addClass('black-tile'))
+        spaceGrid[3][4].addClass('clicked')
+
         spaceGrid[4][3].append($('<div>').addClass('black-tile'))
+        spaceGrid[4][3].addClass('clicked')
+
         //we give White an automatic capturePossible
         //to show which moves are valid on the first turn
         //this is necessary because usually capturePossible is called
         //at the END of the OPPONENT's turn
+        console.log("turnSwitch before forced capturePossible call",turnSwitch)
         capturePossible('.white-tile')
+        firstGameBegun = true;
     })
 
     $('#start-new-freeform-btn').on('click',()=>{
         classic = false;
+        gameOn 
         resetBoard();
+        firstGameBegun = true;
     })
 
     const resetBoard=()=>{
+        console.log(">>>BOARD RESET<<<")
         //erase all tiles from the board
         $('.white-tile').remove();
         $('.black-tile').remove();
@@ -143,13 +160,12 @@ $(()=>{
         $whiteScoreDisplay.text(whiteScore);
         $blackScoreDisplay.text(blackScore);
         //it's White's turn
-        tunSwitch = true;
+        turnSwitch = true;
         //reset glow on scorecards
         $('.scorecard').removeClass('glowing')
         $('#white-scorecard').addClass('glowing')
         //enable gameplay
         gameOn = true;
-
       
     }
 
@@ -207,19 +223,25 @@ $(()=>{
     const validMove=($space)=>{
         let result = true;
 
-        //check if space has already been clicked
-        if($space.hasClass('clicked')){
+        //if the game has not yet begun, or is in the middle of an animation,
+        //then the user must be patient!!! geez!
+        if(!firstGameBegun){
             result = false;
-        }
-
-        //in must-flip mode, check if the player has clicked on a space
-        //that allows a capture--
-        if(classic){
+            alert("Please click 'New Game' to begin!")
+        } else if(!gameOn){
+            result = false;
+        } else if($space.hasClass('clicked')){
+            //check if space has already been clicked
+            result = false;
+        } else if(classic){
+            //in must-flip mode, check if the player has clicked on a space
+            //that allows a capture--
             if(!$space.hasClass('juicyTarget')){
                 result = false;
+                alert('You cannot place a tile here! In Classic Mode, every move must be a capture!')
             }
         }
-        
+
         return result;
     }
 
@@ -414,6 +436,7 @@ $(()=>{
         //is different
         //let newFriends
 
+        console.log("turnSwitch",turnSwitch)
         if(turnSwitch){
             friend = '.white-tile'
             enemy = '.black-tile'
@@ -423,7 +446,7 @@ $(()=>{
             enemy = '.white-tile'
            // newFriends = 'black-tile'
         }
-        //console.log("friend",friend)
+        console.log("friend",friend)
 
         //has a space where capture is possible been detected?
         let canCapture = false;
@@ -469,7 +492,7 @@ $(()=>{
                     //between the starting point and the empty space!!!
                     if(targets.length>=1){
                         canCapture = true;
-                        validSpace = {x:X,y:Y};
+                        validSpace = {x:X,y:Y,dmg:targets.length};
                     }
                     //console.log("empty")
                 }
@@ -531,6 +554,12 @@ $(()=>{
         juicyTargets = juicyTargets.filter((e)=>{
             return (typeof(e) != "string")
         })
+
+        //FOR THE PURPOSES OF AI OPPONENT STRATEGY  !!!!!!!!!!!
+        // we need a way to have the system recognize that if two targets
+        // have the same x and y coordinates, we need to add together their dmg scores
+        // and delete the duplicate
+
         console.log("juicy Targets:",juicyTargets)
 
         if(juicyTargets.length==0){
