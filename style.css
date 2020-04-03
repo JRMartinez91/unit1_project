@@ -117,8 +117,7 @@ h1{
 }
 
 .juicyTarget{
-    background-color: rgb(241, 210, 210);
-    background-color: none;
+    /* background-color: rgb(241, 210, 210); */
 }
 
 /*NB: it's possible to maintain aspect ratio by setting

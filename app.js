@@ -96,12 +96,9 @@ $(()=>{
         if(highlightCapture){
             highlightCapture = false;
             $(event.currentTarget).text("Show Possible Captures: OFF")
-            $('.juicyTarget').css('background-color','none')
         }else{
             highlightCapture = true;
             $(event.currentTarget).text("Show Possible Captures: ON")
-            $('.juicyTarget').css('background-color','rgb(241, 210, 210)')
-
         }
     })
 
@@ -119,6 +116,11 @@ $(()=>{
         spaceGrid[4][4].append($('<div>').addClass('white-tile'))
         spaceGrid[3][4].append($('<div>').addClass('black-tile'))
         spaceGrid[4][3].append($('<div>').addClass('black-tile'))
+        //we give White an automatic capturePossible
+        //to show which moves are valid on the first turn
+        //this is necessary because usually capturePossible is called
+        //at the END of the OPPONENT's turn
+        capturePossible('.white-tile')
     })
 
     $('#start-new-freeform-btn').on('click',()=>{
@@ -134,6 +136,7 @@ $(()=>{
         $('.space').removeClass('clicked');
         //remove 'possible capture' highlight color from all spaces
         $('.space').removeClass('juicyTarget');
+        $('.space').css('background-color','transparent')
         //set scores to zero
         whiteScore = 0;
         blackScore = 0;
@@ -146,6 +149,8 @@ $(()=>{
         $('#white-scorecard').addClass('glowing')
         //enable gameplay
         gameOn = true;
+
+      
     }
 
 
@@ -154,6 +159,10 @@ $(()=>{
 
         //check various condtions for this being a valid move
         if(validMove($(event.currentTarget))){
+
+            //clear all highlighted spaces from the previous turn
+            $('.space').css('background-color','transparent');
+
 
             if(turnSwitch){
                 //place white tile
@@ -271,6 +280,7 @@ $(()=>{
     //been captured.
     //in DETECT mode, it returns a list of tiles that COULD be captured.
     const ping=(row,column,deltaX,deltaY)=>{
+        console.log("pinging");
 
         //this variable will turn false when the ping hits a dead end
         continuePing = true;
@@ -304,7 +314,7 @@ $(()=>{
         //enemy pieces encountered along the ping's path
         let targets = []
 
-        console.log("pinging at direction", deltaX, deltaY)
+        //console.log("pinging at direction", deltaX, deltaY)
 
         while(continuePing){
 
@@ -387,6 +397,7 @@ $(()=>{
     }
 
     const inversePing=(x,y,deltaX,deltaY)=>{
+        console.log("inverse-pinging")
 
         //this variable will turn false when the ping hits a dead end
         continuePing = true;
@@ -423,7 +434,7 @@ $(()=>{
         //the space where a capture is possible, if any
         let validSpace
 
-        console.log("pinging at direction", deltaX, deltaY)
+        //console.log("pinging at direction", deltaX, deltaY)
 
         while(continuePing){
 
@@ -460,7 +471,7 @@ $(()=>{
                         canCapture = true;
                         validSpace = {x:X,y:Y};
                     }
-                    console.log("empty")
+                    //console.log("empty")
                 }
             }
         } // end while
@@ -537,6 +548,13 @@ $(()=>{
             //compile a list of possible targets
             for(space of juicyTargets){
                 spaceGrid[space.y][space.x].addClass('juicyTarget');
+            }
+            if(highlightCapture){
+                $('.juicyTarget').css('background-color','rgb(241, 210, 210)')
+            }
+            else{
+                $('.juicyTarget').css('background-color','transparent')
+
             }
             //in classic mode, this will be used by the validMove function to disallow
             //moves that do not result in captures
