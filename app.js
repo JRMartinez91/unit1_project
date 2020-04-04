@@ -26,6 +26,11 @@ const tileGrid = [ [],[],[],[],[],[],[],[]]
 let whiteScore = 0;
 let blackScore = 0;
 
+//this number goes up when a player has no valid moves
+//and is reset to zero when a player makes a move.
+//when it reaches 2, the game is over
+endCounter = 0;
+
 //the eight directions for the ping function
 const eightDirections =[
     {deltax:1,deltay:0},    //Left
@@ -135,12 +140,25 @@ $(()=>{
         console.log("turnSwitch before forced capturePossible call",turnSwitch)
         capturePossible('.white-tile')
         firstGameBegun = true;
+        gameOn = true;
     })
 
     $('#start-new-freeform-btn').on('click',()=>{
         classic = false;
-        gameOn 
+        gameOn = true;
         resetBoard();
+        spaceGrid[3][3].append($('<div>').addClass('white-tile'))
+        spaceGrid[3][3].addClass('clicked')
+
+        spaceGrid[4][4].append($('<div>').addClass('white-tile'))
+        spaceGrid[4][4].addClass('clicked')
+
+        spaceGrid[3][4].append($('<div>').addClass('black-tile'))
+        spaceGrid[3][4].addClass('clicked')
+
+        spaceGrid[4][3].append($('<div>').addClass('black-tile'))
+        spaceGrid[4][3].addClass('clicked')
+        capturePossible('.white-tile')
         firstGameBegun = true;
     })
 
@@ -173,8 +191,10 @@ $(()=>{
     //placing a tile
     $('.space').on('click',(event)=>{
 
+        
         //check various condtions for this being a valid move
         if(validMove($(event.currentTarget))){
+            endCounter = 0;
 
             //clear all highlighted spaces from the previous turn
             $('.space').css('background-color','transparent');
@@ -401,6 +421,7 @@ $(()=>{
 
     }
 
+    //updates the display of both player's scores
     const keepScore=()=>{
         console.log("updating score")
 
@@ -427,8 +448,9 @@ $(()=>{
 
     }
 
+    //determines locations for possible captures
     const inversePing=(x,y,deltaX,deltaY)=>{
-        console.log("inverse-pinging")
+        //console.log("inverse-pinging")
 
         //this variable will turn false when the ping hits a dead end
         continuePing = true;
@@ -445,7 +467,7 @@ $(()=>{
         //is different
         //let newFriends
 
-        console.log("turnSwitch",turnSwitch)
+        //console.log("turnSwitch",turnSwitch)
         if(turnSwitch){
             friend = '.white-tile'
             enemy = '.black-tile'
@@ -487,12 +509,12 @@ $(()=>{
                 //if it's an enemy space, record that space and continue
                 if( $currentSpace.children(enemy).length > 0){
                     targets.push({x: X, y: Y})
-                    console.log("ENEMY STAND!", enemy)
+                    //console.log("ENEMY STAND!", enemy)
                 }
                 //if it's a frindly space, end the process and declare capture IMpossible
                 else if ( $currentSpace.children(friend).length > 0){
                     continuePing = false;
-                    console.log("friendly tile", friend)
+                    //console.log("friendly tile", friend)
                 }
                 //if it's an empty space, end the process and declare capture possible
                 else if ( $currentSpace.children().length == 0){
@@ -516,7 +538,15 @@ $(()=>{
 
     }
 
-    capturePossible=(tileClass)=>{
+    //check whether a player can capture any enemy tiles this turn.
+    //if yes, highlights the spaces that would accomplish a capture
+    //this function has an ALTERNATE MODE that detects possible captures without
+    //changing anything on the board. which mode is active is determined by the
+    //second parameter
+    // false = normal
+    // true = alternate
+
+    capturePossible=(tileClass,altMode=false)=>{
 
         console.log("XXXXXXX A NEW 'CAPTURE POSSIBLE' CHECK IS STARTING XXXXXXX")
 
@@ -543,7 +573,7 @@ $(()=>{
                 }
             }
         }
-        console.log(myTiles)
+        //console.log(myTiles)
 
         //from each of these space we send out an INVERSE PING:
         //  rather than detecting a row of enemy tiles that ends in a friendly tile,
@@ -574,25 +604,41 @@ $(()=>{
         if(juicyTargets.length==0){
             //in must-flip mode, no results returned means the player in question
             //must skip his turn!
-            if(classic){
-                if(turnSwitch){
-                    setTimeout(function(){alert("Player White has no valid moves! Turn passes to Black")},10)
-                } else{
-                    setTimeout(function(){alert("Player Black has no valid moves! Turn passes to White")},10)
+            if(true){ /////****CHANGE THIS BACK TO "IF CLASSIC" WHEN DONE****/
+                if(endCounter<2){
+                    endCounter += 1;
+                    console.log("END COUNTER",endCounter);
+                    if(turnSwitch){
+                        setTimeout(function(){alert("Player White has no valid moves! Turn passes to Black")},50)
+                        turnSwitch = !turnSwitch;
+                        capturePossible('.black-tile',true);
+                    } else{
+                        setTimeout(function(){alert("Player Black has no valid moves! Turn passes to White")},50)
+                        turnSwitch = !turnSwitch;
+                        capturePossible('.white-tile',true);
+                    }
+                    turnSwitch = !turnSwitch;
+                    //this is where the classic mode's win state is calcualted
+                    //if the OTHER player ALSO has no valid moves, the game is over.
+                }else{
+                    gameOn = false;
+                    setTimeout(function(){alert("No more moves are possible!")},100);
                 }
-                turnSwitch = !turnSwitch;
+
             }
         } else {
-            //compile a list of possible targets
-            for(space of juicyTargets){
-                spaceGrid[space.y][space.x].addClass('juicyTarget');
-            }
-            if(highlightCapture){
-                $('.juicyTarget').css('background-color','rgb(241, 210, 210)')
-            }
-            else{
-                $('.juicyTarget').css('background-color','transparent')
+            if(!altMode){
+                //compile a list of possible targets
+                for(space of juicyTargets){
+                    spaceGrid[space.y][space.x].addClass('juicyTarget');
+                }
+                if(highlightCapture){
+                    $('.juicyTarget').css('background-color','rgb(241, 210, 210)')
+                }
+                else{
+                    $('.juicyTarget').css('background-color','transparent')
 
+                }
             }
             //in classic mode, this will be used by the validMove function to disallow
             //moves that do not result in captures
