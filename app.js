@@ -657,12 +657,12 @@ $(()=>{
 
             }
         } else {
-            if(!altMode){
+            if(endCounter<2){
                 //compile a list of possible targets
                 for(space of juicyTargets){
                     spaceGrid[space.y][space.x].addClass('juicyTarget');
                 }
-                if(highlightCapture){
+                if(highlightCapture&& !altMode){
                     $('.juicyTarget').css('background-color','rgba(241, 241, 241, 0.6)')
                 }
                 else{

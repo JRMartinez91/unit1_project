@@ -67,8 +67,22 @@ Presentation Notes:
 > I concieved of the endCounter like a deuce in tennis-- where it has to happen
     twice in a row to get to the end state, and gets reset if it doesn't.
 
+>the board is a flexbox of eight rows
+>each row is flexbox of eight boxes
+
+>detecting Valid move
+    >no previously clicked space
+    >the ping system gives a special class to boxes that will accomplish captures
+
 > Ping system
+    >eight direction in a hard-coded array
+    >use an xy pair to represent directions
 
 > How is the win state detected?
+    >the same code that works to display possible moves is used to detect
+    when there AREN'T any possible moves!
+    >if that's the case for both players, the game is over.
 
 > Showcase all possible error messages!
+    >'click new game'
+    >'you can't do that in Classic Mode'
