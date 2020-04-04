@@ -86,11 +86,11 @@ $(()=>{
     //hide modals
     $('.modal').on('click',()=>{
         $clicked = $(event.target);
-        //dont hide the modal if what's being clicked is a button or an input box...
-        if(!$clicked.is('button')&&!$clicked.is('input')){
+        //only hide the modal if the user clicks outside its text box...
+        if($clicked.hasClass('modal')){
             $('.modal').css('display','none')
         }
-        //...unless it's one of the 'start a new game' buttons
+        //...or clicks on one of the 'start a new game' buttons
         if($clicked.hasClass('start-button')){
             $('.modal').css('display','none')
         }
@@ -115,6 +115,13 @@ $(()=>{
             highlightCapture = true;
             $(event.currentTarget).text("Show Possible Captures: ON")
         }
+    })
+
+    //Custom names
+    $('#custom-names').on('submit',(event)=>{
+        event.preventDefault();
+        $('#white-player-name').text($('#white-name').val());
+        $('#black-player-name').text($('#black-name').val());
     })
 
     //show new game menu

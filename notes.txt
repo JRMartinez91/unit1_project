@@ -56,8 +56,10 @@ ANIMATION WORKS PERFECTLY
 DETECTING WIN/LOSE
 
 - EASY: when the board is filled, whomstever has more tiles wins!
+RESOLVED
 
 - HARD: when both players have no valid moves left, whoever has more tiles wins
+RESOLVED
 
 ----
 Presentation Notes:
