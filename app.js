@@ -160,6 +160,17 @@ $(()=>{
         classic = false;
         gameOn = true;
         resetBoard();
+        spaceGrid[3][3].append($('<div>').addClass('white-tile'))
+        spaceGrid[3][3].addClass('clicked')
+
+        spaceGrid[4][4].append($('<div>').addClass('white-tile'))
+        spaceGrid[4][4].addClass('clicked')
+
+        spaceGrid[3][4].append($('<div>').addClass('black-tile'))
+        spaceGrid[3][4].addClass('clicked')
+
+        spaceGrid[4][3].append($('<div>').addClass('black-tile'))
+        spaceGrid[4][3].addClass('clicked')
         firstGameBegun = true;
     })
 
@@ -632,10 +643,11 @@ $(()=>{
                         $('.scorecard').removeClass('glowing')
                         $('#white-scorecard').addClass('glowing')
                     }
-                    turnSwitch = !turnSwitch;
+                    //turnSwitch = !turnSwitch;
                     //this is where the classic mode's win state is calcualted
                     //if the OTHER player ALSO has no valid moves, the game is over.
-                }else{
+                }
+                if(endCounter>=2){
                     //when the end counter reaches 2
                     setTimeout(function(){alert("No more moves are possible!")},100);
 
