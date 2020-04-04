@@ -50,3 +50,23 @@ The possibility of AI:
     and making it a separate function. That way, said function could be called
     by BOTH the on-click of .space, AND  by whatever is controlling the computer
     opponent's moves.
+
+ANIMATION WORKS PERFECTLY
+
+DETECTING WIN/LOSE
+
+- EASY: when the board is filled, whomstever has more tiles wins!
+
+- HARD: when both players have no valid moves left, whoever has more tiles wins
+
+----
+Presentation Notes:
+
+> I concieved of the endCounter like a deuce in tennis-- where it has to happen
+    twice in a row to get to the end state, and gets reset if it doesn't.
+
+> Ping system
+
+> How is the win state detected?
+
+> Showcase all possible error messages!

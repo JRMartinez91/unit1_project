@@ -26,10 +26,16 @@ const tileGrid = [ [],[],[],[],[],[],[],[]]
 let whiteScore = 0;
 let blackScore = 0;
 
-//this number goes up when a player has no valid moves
+//endCounter controls the win state in Classic Mode
+//it goes up by 1 when a player has no valid moves
 //and is reset to zero when a player makes a move.
 //when it reaches 2, the game is over
 endCounter = 0;
+
+//spaceCounter controls the win state in freeform mode
+//it counts the number of spaces that have been filled in
+//when it reaches 64, the game is over
+spaceCounter = 0;
 
 //the eight directions for the ping function
 const eightDirections =[
@@ -80,8 +86,8 @@ $(()=>{
     //hide modals
     $('.modal').on('click',()=>{
         $clicked = $(event.target);
-        //dont hide the modal if what's being clicked is a button...
-        if(!$clicked.is('button')){
+        //dont hide the modal if what's being clicked is a button or an input box...
+        if(!$clicked.is('button')&&!$clicked.is('input')){
             $('.modal').css('display','none')
         }
         //...unless it's one of the 'start a new game' buttons
@@ -147,18 +153,6 @@ $(()=>{
         classic = false;
         gameOn = true;
         resetBoard();
-        spaceGrid[3][3].append($('<div>').addClass('white-tile'))
-        spaceGrid[3][3].addClass('clicked')
-
-        spaceGrid[4][4].append($('<div>').addClass('white-tile'))
-        spaceGrid[4][4].addClass('clicked')
-
-        spaceGrid[3][4].append($('<div>').addClass('black-tile'))
-        spaceGrid[3][4].addClass('clicked')
-
-        spaceGrid[4][3].append($('<div>').addClass('black-tile'))
-        spaceGrid[4][3].addClass('clicked')
-        capturePossible('.white-tile')
         firstGameBegun = true;
     })
 
@@ -177,6 +171,9 @@ $(()=>{
         blackScore = 0;
         $whiteScoreDisplay.text(whiteScore);
         $blackScoreDisplay.text(blackScore);
+        //reset win state detectors
+        spaceCounter = 0;
+        endCounter = 0;
         //it's White's turn
         turnSwitch = true;
         //reset glow on scorecards
@@ -195,6 +192,7 @@ $(()=>{
         //check various condtions for this being a valid move
         if(validMove($(event.currentTarget))){
             endCounter = 0;
+            spaceCounter += 1;
 
             //clear all highlighted spaces from the previous turn
             $('.space').css('background-color','transparent');
@@ -232,6 +230,12 @@ $(()=>{
                 capturePossible('.black-tile');
                 $('#black-scorecard').addClass('glowing')
                 $('#white-scorecard').removeClass('glowing')
+            }
+
+            //if the current move has resulted in all space being filled
+            if(spaceCounter>=64 && !classic){
+                //end the game.
+                winScreen();
             }
 
         }//if it's not a valid move, nothing happens
@@ -604,7 +608,7 @@ $(()=>{
         if(juicyTargets.length==0){
             //in must-flip mode, no results returned means the player in question
             //must skip his turn!
-            if(true){ /////****CHANGE THIS BACK TO "IF CLASSIC" WHEN DONE****/
+            if(classic){ /////****CHANGE THIS BACK TO "IF CLASSIC" WHEN DONE****/
                 if(endCounter<2){
                     endCounter += 1;
                     console.log("END COUNTER",endCounter);
@@ -612,17 +616,24 @@ $(()=>{
                         setTimeout(function(){alert("Player White has no valid moves! Turn passes to Black")},50)
                         turnSwitch = !turnSwitch;
                         capturePossible('.black-tile',true);
+                        $('.scorecard').removeClass('glowing')
+                        $('#black-scorecard').addClass('glowing')
                     } else{
                         setTimeout(function(){alert("Player Black has no valid moves! Turn passes to White")},50)
                         turnSwitch = !turnSwitch;
                         capturePossible('.white-tile',true);
+                        $('.scorecard').removeClass('glowing')
+                        $('#white-scorecard').addClass('glowing')
                     }
                     turnSwitch = !turnSwitch;
                     //this is where the classic mode's win state is calcualted
                     //if the OTHER player ALSO has no valid moves, the game is over.
                 }else{
-                    gameOn = false;
+                    //when the end counter reaches 2
                     setTimeout(function(){alert("No more moves are possible!")},100);
+
+                    winScreen();
+
                 }
 
             }
@@ -644,6 +655,20 @@ $(()=>{
             //moves that do not result in captures
             //if 'show possible captures' is ON, these spaces will be highlighted.
         }
+    }
+
+    const winScreen=()=>{
+        //disable gameplay
+        gameOn= false;
+        //determine who won
+        keepScore();
+        //Look Ma, I used a ternary!
+        const winnerName = (whiteScore>blackScore) ? $('#white-player-name').text() : $('#black-player-name').text() ;
+        //display that name in the win screen modal
+        $('#winner').text(winnerName)
+
+        //display the win screen
+        $('#win-modal').css('display','block')
     }
 
 
