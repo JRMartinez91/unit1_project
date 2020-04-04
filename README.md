@@ -33,7 +33,7 @@ I found a very nice starter animation on animista.net, but there was one problem
 
 When a tile is flipped, the old tile disappears, and a new tile spawns in, but that new tile has a sepcial class that assigns it an animation that makes it so that when it first appears, it has the same color of the tile that disappeared, then turns the color that it's meant to be in the midst of a flipping animation. This crates the illusion that the old tile has transformed, rather than being replaced.
 
-# design process
+# Design Process
 
 ## Page Layout
 The process began with a few wireframe sketches. I knew from the start that I wanted a general layout with three columns: a gameboard in the center and supplementary elements on either side, like a stage framed by curtains.
@@ -59,6 +59,11 @@ Now we know the space we clicked is at location spaceGrid[y][x].
 
 ### Win State
 
+The code used to determine and display possible moves on each turn can also be used to detect when there *aren't* any possible moves. If that's the case for both players, the game is over, and the player with more tiles on the board wins.
+
+This is tracked by a global variable called endCounter, which ticks up whenever a player has no possible moves, and resets when a player makes a move.
+
+I concieved of the endCounter like a deuce in tennis-- where something has to happen twice in a row to get to the end state, and gets reset if it doesn't.
 
 ## Unresolved Issues
 
