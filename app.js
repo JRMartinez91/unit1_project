@@ -318,15 +318,20 @@ $(()=>{
         //the variable used to assign a class to the newly created tiles
         //is different
         let newFriends
+        
+        //animClass adds a special animation to tiles that appear in a capture
+        let animClass
 
         if(turnSwitch){
             friend = '.white-tile'
             enemy = '.black-tile'
             newFriends = 'white-tile'
+            animClass = 'capture-white'
         } else {
             friend = '.black-tile'
             enemy = '.white-tile'
             newFriends = 'black-tile'
+            animClass = 'capture-black'
         }
         //console.log("friend",friend)
 
@@ -386,6 +391,10 @@ $(()=>{
                 $victimSpace.children().remove();
                 //add a tile of friendly color
                 $newTile = $('<div>').addClass(newFriends)
+                /// ANIMATION
+                // the added tiles have a special class that makes them start
+                // off with the OPPOSITE color, then change as they flip
+                $newTile.addClass(animClass)
                 $victimSpace.append($newTile);
             }
         } // end capture

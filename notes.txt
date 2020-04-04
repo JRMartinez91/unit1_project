@@ -19,7 +19,7 @@
 Things to put in options:
     - turn "highlight possible captures" on and off
     RESOLVED
-    
+
 -during "must flip", needs some kind of "cannot play piece here" alert
 RESOLVED.
 
@@ -44,3 +44,9 @@ RESOLVED;
 }
 RESOLVED: it was a typo in the resetBoard() function-- 'turnswitch' was misspelled,
 and thus never actually reset. Haaaaa.
+
+The possibility of AI:
+    - the solution begins with detaching the .space class' on-click event
+    and making it a separate function. That way, said function could be called
+    by BOTH the on-click of .space, AND  by whatever is controlling the computer
+    opponent's moves.

@@ -9,8 +9,8 @@ div{
 }
 
 .flip-vertical-right {
-	-webkit-animation: flip-vertical-right 5s cubic-bezier(0.680, -0.550, 0.265, 1.550) both;
-	        animation: flip-vertical-right 5s cubic-bezier(0.680, -0.550, 0.265, 1.550) both;
+	-webkit-animation: flip-vertical-right 0.8s cubic-bezier(0.680, -0.550, 0.265, 1.550) both;
+	        animation: flip-vertical-right 0.8s cubic-bezier(0.680, -0.550, 0.265, 1.550) both;
 }
 
 /* ----------------------------------------------
