@@ -64,25 +64,76 @@ RESOLVED
 ----
 Presentation Notes:
 
-> I concieved of the endCounter like a deuce in tennis-- where it has to happen
-    twice in a row to get to the end state, and gets reset if it doesn't.
 
 >the board is a flexbox of eight rows
 >each row is flexbox of eight boxes
+>they are generated at page load with a nested for-loop
+>each box's jquery identity is stored in an array of arrays that 
+    matches the structure of the divs themselves
+>so each box has a set of coordinates that can be accessed by JS
+>navigating around the grid becomes a matter of manipulating coordinates.
+
+>the on-click event of each individual space triggers all the other code.
+>this is somewhat analogous to the 'update' function in traditional game development
+>all the info is updated when you click, and between clicks the game is essentially frozen
+
+>'whose turn is it' is a boolean, that's used for a lot of if-statements.
+
+>each space is a flexbox that has another div representing the tile centered within it.
+
+> Ping system
+    >eight direction in a hard-coded array
+    >use an xy pair to represent directions
+    >basically 2D vectors pointing the eight compass directiopns
+    >two kinds of ping
+        >the ping that detects a space where you can put a tile
+        looks for a row of enemies followed by a blank space. it returns a list
+        of blank spaces that qualify
+        > the ping that handles capturing looks for a row of enemies
+        followed by a friendly tile, makes a list of all the enemy tiles it finds,
+        then 'flips' them.
+    >the ping only goes in one direction, its nested within a function that calls
+    it eight times using the hard-coded direction list.
+
+>capture check finds the event.currentTarget's location within the grid
+    >first, search the grid for the row that contains our target
+        >the target's index in the row is the X coordinate.
+    >then ask grid for the index of the row where we found the space.
+        >the row's index is the Y coordinate.
+
+
+>when a tile is placed, a capture ping is sent out.
+
+>AFTER that, an inverse "where can I capture"? ping is sent out from every enemy tile
+>so that on the next turn, the game will have a list of spaces where a valid move can be made
+
+the grid is searhced for every tile of that color, and eight inverse pings are sent
+out from each one.
+
+>as the game goes on the process gets more and more bulky-- on EVERY turn,
+ all tiles on the board are going to be sending out eight "can I capture?" pings
 
 >detecting Valid move
     >no previously clicked space
     >the ping system gives a special class to boxes that will accomplish captures
 
-> Ping system
-    >eight direction in a hard-coded array
-    >use an xy pair to represent directions
 
 > How is the win state detected?
     >the same code that works to display possible moves is used to detect
     when there AREN'T any possible moves!
     >if that's the case for both players, the game is over.
 
+> I concieved of the endCounter like a deuce in tennis-- where it has to happen
+    twice in a row to get to the end state, and gets reset if it doesn't.
+
 > Showcase all possible error messages!
     >'click new game'
     >'you can't do that in Classic Mode'
+
+>ANIMATION
+    >give credit to animista
+    >when a tile is flipped, the old tile disappears, and a new tile spawns in
+    >but that new tile has a sepcial class that assigns it an animation that makes it 
+     START as the same color of the tile that disappeared, then turns the color it was meant
+     to be, alongisde a flip animation. this creates the illusion that the old tile transformed
+
