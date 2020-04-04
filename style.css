@@ -1,7 +1,23 @@
-*{
-    border: 1px solid hotpink;
+/* *{
+    border: 1px solid gainsboro;
+} */
+
+body{
+    font-family: 'Federo', sans-serif;
+    background-color: rgb(33, 35, 37);
+    color: gainsboro;
 }
+
+button{
+    font-family: 'Spartan', sans-serif;
+}
+
 /* Overall Layout */
+h1{
+    font-size: 50px;
+    margin: 5px 0;
+}
+
 .container-all{
     display:flex;
     flex-direction:row;
@@ -18,7 +34,7 @@
 }
 
 .glowing{
-    box-shadow: goldenrod 0 0 10px;
+    box-shadow: goldenrod 0 0 30px;
 }
 
 .scorecard{
@@ -28,11 +44,22 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+    outline: 5px ridge gainsboro;
+}
+
+#white-scorecard{
+    background-color:rgb(228, 234, 238);
+    color:rgb(33, 35, 37)
+}
+
+#black-scorecard{
+    background-color:rgb(15, 16, 17)
 }
 
 .scorecard h3{
     margin: 0;
     text-align: center;
+    font-size: 30px;
 }
 
 .scorecard img{
@@ -56,6 +83,21 @@
     align-content: center;
 }
 /* Options Menu */
+.modal-content{
+    outline: solid white 10px;
+    color: rgb(33, 35, 37);
+
+}
+
+.click-to-close-note{
+    font-style: italic;
+    color: gray;
+    text-align:center;
+    font-family: 'Spartan', sans-serif;
+
+}
+
+
 #options-bar{
     display:flex;
     justify-content: center;
@@ -65,7 +107,7 @@
 #options-bar button, .modal button{
     font-size: 20px;
     padding: 5px;
-    margin: 5px;
+    margin: 10px 5px;
     width: 200px;
 }
 
@@ -94,11 +136,14 @@ input{
 /* Gameboard and Tiles */
 .container-gameboard{
     flex-grow: 3;
-    background-color: grey;
+    background-color: black;
     display:flex;
     justify-content: center;
     align-items: center;
-    
+    outline: 5px ridge gainsboro;
+    background-image: url(images/black_marble.png);
+    background-repeat: repeat;
+
 }
 
 /* the point at which the board and scorecards can no longer fit on the screen
@@ -116,6 +161,8 @@ then, the two scorecards must align-self to either side, so that the are side by
     background-color:white;
     display:flex;
     flex-direction: column;
+    background-image: url(images/tan_marble.png);
+    outline: 4px outset rgb(70, 48, 40);
 }
 
 h1{
@@ -133,6 +180,9 @@ h1{
     display:flex;
     justify-content: center;
     align-items: center;
+    border: 1px solid white;
+    border-top-color:gray;
+    border-left-color:gray;
 }
 
 /*tiles created via capture have a special class that creates the following effects:
@@ -163,10 +213,6 @@ h1{
     border-radius: 50%;
     width: 80%;
     height: 80%;
-}
-
-.juicyTarget{
-    /* background-color: rgb(241, 210, 210); */
 }
 
 /*NB: it's possible to maintain aspect ratio by setting

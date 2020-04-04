@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Federo&family=Spartan&display=swap" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <script
     src="https://code.jquery.com/jquery-3.4.1.js"
@@ -49,8 +50,8 @@
         <div class="modal-content" id="rules-modal-content">
             <h2>Rules of Reversi</h2>
             <div class="divider-bar"></div>
-            <p>the rules go here</p>
-            <p>click anywhere to close</p>
+            <p>Reversi is a game for two players. Players take turns placing tiles on the board, one at time. When a row of one player's tiles are completely surrounded by the other player's--horiztonally, vertically, or diagonall-- the surrounded tiles are captured by the other player, and flipped to that player's color. The game ends when either the entire board is filled up, or no valid moves are possible. The goal of the game is to have more tiles of your color on board than your opponent when the game ends.</p>
+            <p class="click-to-close-note">click anywhere to close</p>
         </div>
     </div>
     <!--Options Modal-->
@@ -68,7 +69,7 @@
                 <input type="text" id="black-name" name="black-name" value="Black"><br><br>
                 <input type="submit" value="Submit">
               </form> 
-            <p>click anywhere to close</p>
+            <p class="click-to-close-note">click anywhere to close</p>
         </div>
     </div>
     <!--Select Game Mode Modal-->
@@ -86,14 +87,14 @@
                     <p>In Freeform Reversi, the game begins with the board empty, and players may place tiles in any free space.</p>
                 </div>
             </div>
-            <p>click anywhere to close</p>
+            <p class="click-to-close-note">click anywhere to close</p>
         </div>
     </div>
     <!--Win Screen-->
     <div class="modal" id="win-modal">
         <div class="modal-content" id="win-modal-content">
             <h2><span id="winner">Somebody</span> wins the game!</h2>
-            <p>Click anywhere to close</p>
+            <p class="click-to-close-note">Click anywhere to close</p>
         </div>
     </div>
 </body>

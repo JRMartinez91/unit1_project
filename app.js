@@ -651,7 +651,7 @@ $(()=>{
                     spaceGrid[space.y][space.x].addClass('juicyTarget');
                 }
                 if(highlightCapture){
-                    $('.juicyTarget').css('background-color','rgb(241, 210, 210)')
+                    $('.juicyTarget').css('background-color','rgba(241, 241, 241, 0.6)')
                 }
                 else{
                     $('.juicyTarget').css('background-color','transparent')
