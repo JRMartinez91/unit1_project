@@ -681,10 +681,16 @@ $(()=>{
         gameOn= false;
         //determine who won
         keepScore();
+        
+        if(whiteScore==blackScore){
+            $('#winner').text("It's a Draw!")
+        }else{
+
         //Look Ma, I used a ternary!
         const winnerName = (whiteScore>blackScore) ? $('#white-player-name').text() : $('#black-player-name').text() ;
         //display that name in the win screen modal
         $('#winner').text(winnerName)
+        }
 
         //display the win screen
         $('#win-modal').css('display','block')
